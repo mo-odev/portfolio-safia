@@ -1,3 +1,4 @@
+import { Loader2, Play } from "lucide-react";
 import { useRef, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -49,6 +50,7 @@ const videoRefs = new Map<string, HTMLVideoElement>();
 const VideoCard = ({ video, playingVideoId, onVideoPlay }: { video: Video; playingVideoId: string | null; onVideoPlay: (videoId: string) => void }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const isPlaying = playingVideoId === video.id;
+  const [isBuffering, setIsBuffering] = useState(false);
 
   const handlePlayClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -56,13 +58,16 @@ const VideoCard = ({ video, playingVideoId, onVideoPlay }: { video: Video; playi
 
     if (isPlaying) {
       videoRef.current.pause();
+      setIsBuffering(false);
       onVideoPlay("");
     } else {
       onVideoPlay(video.id);
+      setIsBuffering(true);
       const playPromise = videoRef.current.play();
       if (playPromise !== undefined) {
         playPromise.catch(() => {
           // Play can be interrupted when switching quickly between cards
+          setIsBuffering(false);
         });
       }
     }
@@ -87,11 +92,28 @@ const VideoCard = ({ video, playingVideoId, onVideoPlay }: { video: Video; playi
             disablePictureInPicture
             preload="metadata"
             playsInline
+            onPlaying={() => setIsBuffering(false)}
+            onWaiting={() => setIsBuffering(true)}
+            onPause={() => setIsBuffering(false)}
             onClick={handlePlayClick}
           >
             <source src={video.thumbnail} type="video/mp4" />
             متصفحك لا يدعم تشغيل الفيديو
           </video>
+          {!isPlaying && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <span className="w-12 h-12 rounded-full bg-black/45 border border-white/35 flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
+                <Play className="w-5 h-5 text-white ml-0.5" />
+              </span>
+            </div>
+          )}
+          {isPlaying && isBuffering && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <span className="w-12 h-12 rounded-full bg-black/45 border border-white/35 flex items-center justify-center">
+                <Loader2 className="w-5 h-5 text-white animate-spin" />
+              </span>
+            </div>
+          )}
           <span className="absolute bottom-3 right-3 text-xs text-muted-foreground bg-card/90 px-2 py-1 rounded-md pointer-events-none" style={{ boxShadow: "var(--shadow-soft)" }}>
             {video.duration}
           </span>

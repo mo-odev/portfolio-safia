@@ -14,7 +14,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="py-8 px-4 border-t border-border/50 text-center">
         <p className="text-xs text-muted-foreground">
-          © 2026 Safia Zdi. Tous droits réservés.
+          © 2026 Luméa Créatrice. Tous droits réservés.
         </p>
       </footer>
     </main>

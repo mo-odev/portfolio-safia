@@ -5,14 +5,60 @@ import { Textarea } from "@/components/ui/textarea";
 import { Send, MessageCircle, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
+const encode = (data: Record<string, string>) => new URLSearchParams(data).toString();
+const contactEmail = "zaouidisafia041@gmail.com";
+
 const ContactSection = () => {
   const { toast } = useToast();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({ title: "Message envoyé !", description: "Merci de m'avoir contacté. Je reviendrai vers vous bientôt." });
-    setForm({ name: "", email: "", message: "" });
+    setIsSubmitting(true);
+
+    const isLocalhost = ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname);
+    const mailtoSubject = encodeURIComponent(`Nouveau message de ${form.name}`);
+    const mailtoBody = encodeURIComponent(
+      `Nom: ${form.name}\nEmail: ${form.email}\n\nMessage:\n${form.message}`,
+    );
+    const mailtoLink = `mailto:${contactEmail}?subject=${mailtoSubject}&body=${mailtoBody}`;
+
+    if (isLocalhost) {
+      window.location.href = mailtoLink;
+      toast({
+        title: "Mode local",
+        description: "Le formulaire Netlify fonctionne après déploiement. Ouverture de votre application email.",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const response = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: encode({
+          "form-name": "contact",
+          ...form,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Submission failed");
+      }
+
+      toast({ title: "Message envoye !", description: "Merci. Votre message a bien ete recu." });
+      setForm({ name: "", email: "", message: "" });
+    } catch {
+      window.location.href = mailtoLink;
+      toast({
+        title: "Envoi via email",
+        description: "Le formulaire n'est pas disponible ici. Ouverture de votre application email.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -22,12 +68,21 @@ const ContactSection = () => {
           Restons en <span className="gradient-text">Contact</span>
         </h2>
         <p className="text-center text-muted-foreground mb-12 max-w-md mx-auto">
-          Vous avez un projet en tête ? Laissez-moi un message et créons quelque chose d'extraordinaire ensemble.
+          Vous avez un projet en tete ? Laissez-moi un message et creons quelque chose d'extraordinaire ensemble.
         </p>
 
-        <form onSubmit={handleSubmit} className="soft-card p-6 md:p-8 space-y-5">
+        <form
+          name="contact"
+          method="POST"
+          data-netlify="true"
+          onSubmit={handleSubmit}
+          className="soft-card p-6 md:p-8 space-y-5"
+        >
+          <input type="hidden" name="form-name" value="contact" />
+          <input type="hidden" name="bot-field" />
           <div>
             <Input
+              name="name"
               placeholder="Votre Nom"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -37,6 +92,7 @@ const ContactSection = () => {
           </div>
           <div>
             <Input
+              name="email"
               type="email"
               placeholder="Votre Email"
               value={form.email}
@@ -47,6 +103,7 @@ const ContactSection = () => {
           </div>
           <div>
             <Textarea
+              name="message"
               placeholder="Votre Message"
               value={form.message}
               onChange={(e) => setForm({ ...form, message: e.target.value })}
@@ -58,10 +115,11 @@ const ContactSection = () => {
           <Button
             type="submit"
             size="lg"
+            disabled={isSubmitting}
             className="w-full rounded-xl h-12 font-semibold hover:scale-[1.02] transition-all duration-300 shadow-md"
           >
             <Send className="w-4 h-4 mr-2" />
-            Envoyer un Message
+            {isSubmitting ? "Envoi en cours..." : "Envoyer un Message"}
           </Button>
         </form>
 

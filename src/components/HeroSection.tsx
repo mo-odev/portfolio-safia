@@ -2,11 +2,12 @@ import { Mail, MessageCircle, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const contactNumberIntl = "213542505945";
+const contactEmail = "zaouidisafia041@gmail.com";
 
 const socials = [
   { icon: MessageCircle, href: `https://wa.me/${contactNumberIntl}`, label: "WhatsApp" },
   { icon: Send, href: `tg://resolve?phone=${contactNumberIntl}`, label: "Telegram" },
-  { icon: Mail, href: "#contact", label: "Email" },
+  { icon: Mail, href: `mailto:${contactEmail}`, label: "Email" },
 ];
 
 const HeroSection = () => {
@@ -21,7 +22,7 @@ const HeroSection = () => {
         <div className="relative mb-8">
           <img
             src="/assets/profile.jpg"
-            alt="Portrait de Safia Zdi"
+            alt="Portrait de Luméa Créatrice"
             width={176}
             height={176}
             loading="eager"
@@ -32,7 +33,7 @@ const HeroSection = () => {
 
         {/* Bio */}
         <p className="text-sm font-medium tracking-[0.25em] uppercase text-muted-foreground mb-4">
-          Safia Zdi • Créatrice de Vidéos UGC et Créatives
+          Luméa Créatrice • Créatrice de Vidéos UGC et Créatives
         </p>
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold leading-tight mb-6 text-balance text-foreground">
           Créer des Histoires qui{" "}
@@ -58,8 +59,8 @@ const HeroSection = () => {
               key={s.label}
               href={s.href}
               aria-label={s.label}
-              target={s.href.startsWith("#") ? undefined : "_blank"}
-              rel={s.href.startsWith("#") ? undefined : "noopener noreferrer"}
+              target={s.href.startsWith("http") || s.href.startsWith("tg://") ? "_blank" : undefined}
+              rel={s.href.startsWith("http") || s.href.startsWith("tg://") ? "noopener noreferrer" : undefined}
               className="w-11 h-11 rounded-full flex items-center justify-center text-muted-foreground hover:text-primary bg-card hover:bg-secondary transition-all duration-300"
               style={{ boxShadow: "var(--shadow-soft)" }}
             >
