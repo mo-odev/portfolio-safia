@@ -1,0 +1,131 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 220 20% 18%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 18%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 18%;
+
+    --primary: 215 75% 55%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 25% 94%;
+    --secondary-foreground: 220 15% 35%;
+
+    --muted: 210 20% 92%;
+    --muted-foreground: 220 10% 50%;
+
+    --accent: 195 70% 45%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 15% 90%;
+    --input: 210 15% 90%;
+    --ring: 215 75% 55%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 210 40% 98%;
+    --sidebar-foreground: 220 20% 18%;
+    --sidebar-primary: 215 75% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 25% 94%;
+    --sidebar-accent-foreground: 220 20% 18%;
+    --sidebar-border: 210 15% 90%;
+    --sidebar-ring: 215 75% 55%;
+
+    /* Custom tokens */
+    --shadow-soft: 0 4px 24px -4px hsl(215 50% 40% / 0.08);
+    --shadow-card: 0 8px 32px -8px hsl(215 50% 40% / 0.1);
+    --shadow-card-hover: 0 16px 48px -12px hsl(215 50% 40% / 0.15);
+    --gradient-warm: linear-gradient(135deg, hsl(215 75% 55%), hsl(195 70% 45%));
+    --gradient-accent: linear-gradient(135deg, hsl(215 75% 55%), hsl(195 70% 50%));
+    --beige-bg: 210 30% 96%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+}
+
+@layer utilities {
+  .soft-card {
+    background: hsl(var(--card));
+    box-shadow: var(--shadow-card);
+    border-radius: var(--radius);
+  }
+
+  .soft-card-hover {
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+  }
+
+  .soft-card-hover:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-2px);
+  }
+
+  .gradient-text {
+    background: var(--gradient-warm);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Marquee animation */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Prevent native WebKit overlay play button from appearing on custom video cards */
+.video-card-player::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none;
+}
+
+.video-card-player::-webkit-media-controls-overlay-play-button {
+  display: none !important;
+  -webkit-appearance: none;
+}
+
+.video-card-player::-webkit-media-controls {
+  display: none !important;
+}
+
+.video-card-player::-webkit-media-controls-enclosure {
+  display: none !important;
+}
